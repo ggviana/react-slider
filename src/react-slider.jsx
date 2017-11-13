@@ -1,10 +1,11 @@
 import React from 'react'
-import defaultProps from 'defaultProps'
+import Direction from './direction-enum'
+import defaultProps from './defaultProps'
 import propTypes from 'propTypes'
-import autobind from 'util/autobind'
-import pauseEvent from 'util/pauseEvent'
-import stopPropagation from 'util/stopPropagation'
-import linspace from 'util/linspace'
+import autobind from './util/autobind'
+import pauseEvent from './util/pauseEvent'
+import stopPropagation from './util/stopPropagation'
+import linspace from './util/linspace'
 
 function ensureArray(x) {
   return x == null ? [] : Array.isArray(x) ? x : [x]
@@ -493,32 +494,32 @@ class Slider extends React.Component {
 
   _axisKey () {
     var orientation = this.props.orientation
-    if (orientation === 'horizontal') return 'X'
-    if (orientation === 'vertical') return 'Y'
+    if (orientation === Direction.Horizontal) return 'X'
+    if (orientation === Direction.Vertical) return 'Y'
   }
 
   _orthogonalAxisKey () {
     var orientation = this.props.orientation
-    if (orientation === 'horizontal') return 'Y'
-    if (orientation === 'vertical') return 'X'
+    if (orientation === Direction.Horizontal) return 'Y'
+    if (orientation === Direction.Vertical) return 'X'
   }
 
   _posMinKey () {
     var orientation = this.props.orientation
-    if (orientation === 'horizontal') return this.props.invert ? 'right' : 'left'
-    if (orientation === 'vertical') return this.props.invert ? 'bottom' : 'top'
+    if (orientation === Direction.Horizontal) return this.props.invert ? 'right' : 'left'
+    if (orientation === Direction.Vertical) return this.props.invert ? 'bottom' : 'top'
   }
 
   _posMaxKey () {
     var orientation = this.props.orientation
-    if (orientation === 'horizontal') return this.props.invert ? 'left' : 'right'
-    if (orientation === 'vertical') return this.props.invert ? 'top' : 'bottom'
+    if (orientation === Direction.Horizontal) return this.props.invert ? 'left' : 'right'
+    if (orientation === Direction.Vertical) return this.props.invert ? 'top' : 'bottom'
   }
 
   _sizeKey () {
     var orientation = this.props.orientation
-    if (orientation === 'horizontal') return 'clientWidth'
-    if (orientation === 'vertical') return 'clientHeight'
+    if (orientation === Direction.Horizontal) return 'clientWidth'
+    if (orientation === Direction.Vertical) return 'clientHeight'
   }
 
   _trimAlignValue (val, props) {

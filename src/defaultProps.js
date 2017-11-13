@@ -1,10 +1,12 @@
+import Direction from './direction-enum'
+
 export default {
   min: 0,
-    max: 100,
+  max: 100,
   step: 1,
   minDistance: 0,
   defaultValue: 0,
-  orientation: 'horizontal',
+  orientation: Direction.Horizontal,
   className: 'slider',
   handleClassName: 'handle',
   handleActiveClassName: 'active',
