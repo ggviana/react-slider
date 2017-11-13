@@ -1,3 +1,4 @@
-export default function stopPropagation (e) {
-  if (e.stopPropagation) e.stopPropagation()
+export default function stopPropagation (event) {
+  if (event.stopPropagation)
+    event.stopPropagation()
 }
