@@ -240,36 +240,36 @@ class Slider extends React.Component {
 
   // create the `keydown` handler for the i-th handle
   _createOnKeyDown (i) {
-    return function (e) {
+    return event => {
       if (this.props.disabled) return
       this._start(i)
       this._addHandlers(this._getKeyDownEventMap())
-      pauseEvent(e)
-    }.bind(this)
+      pauseEvent(event)
+    }
   }
 
   // create the `mousedown` handler for the i-th handle
   _createOnMouseDown (i) {
-    return function (e) {
+    return event => {
       if (this.props.disabled) return
-      var position = this._getMousePosition(e)
+      var position = this._getMousePosition(event)
       this._start(i, position[0])
       this._addHandlers(this._getMouseEventMap())
-      pauseEvent(e)
-    }.bind(this)
+      pauseEvent(event)
+    }
   }
 
   // create the `touchstart` handler for the i-th handle
   _createOnTouchStart (i) {
-    return function (e) {
+    return event => {
       if (this.props.disabled || e.touches.length > 1) return
-      var position = this._getTouchPosition(e)
+      var position = this._getTouchPosition(event)
       this.startPosition = position
       this.isScrolling = undefined // don't know yet if the user is trying to scroll
       this._start(i, position[0])
       this._addHandlers(this._getTouchEventMap())
-      stopPropagation(e)
-    }.bind(this)
+      stopPropagation(event)
+    }
   }
 
   _addHandlers (eventMap) {
