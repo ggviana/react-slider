@@ -6,14 +6,7 @@ import autobind from './util/autobind'
 import pauseEvent from './util/pauseEvent'
 import stopPropagation from './util/stopPropagation'
 import generateSteps from './util/generateSteps'
-
-function ensureArray(x) {
-  return x == null ? [] : Array.isArray(x) ? x : [x]
-}
-
-function undoEnsureArray(x) {
-  return x != null && x.length === 1 ? x[0] : x
-}
+import {ensureArray, undoEnsureArray} from './util/array-utils'
 
 class Slider extends React.Component {
   constructor (props) {
