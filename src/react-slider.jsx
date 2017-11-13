@@ -5,7 +5,7 @@ import propTypes from 'propTypes'
 import autobind from './util/autobind'
 import pauseEvent from './util/pauseEvent'
 import stopPropagation from './util/stopPropagation'
-import linspace from './util/linspace'
+import generateSteps from './util/generateSteps'
 
 function ensureArray(x) {
   return x == null ? [] : Array.isArray(x) ? x : [x]
@@ -77,7 +77,7 @@ class Slider extends React.Component {
         if (value.length !== count || defaultValue.length !== count) {
           console.warn(this.constructor.displayName + ": Number of values does not match number of children.")
         }
-        return linspace(this.props.min, this.props.max, count)
+        return generateSteps(this.props.min, this.props.max, count)
     }
   }
 

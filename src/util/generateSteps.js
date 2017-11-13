@@ -1,7 +1,7 @@
 /**
  * Spreads `count` values equally between `min` and `max`.
  */
-export default function linspace(min, max, count) {
+export default function generateSteps (min, max, count) {
   var range = (max - min) / (count - 1)
   var res = []
 
