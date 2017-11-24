@@ -3,7 +3,7 @@ import Direction from './direction-enum'
 import defaultProps from './defaultProps'
 import propTypes from './propTypes'
 import autobind from './util/autobind'
-import pauseEvent from './util/pauseEvent'
+import {pauseEvent, addHandlers, removeHandlers} from './util/events'
 import stopPropagation from './util/stopPropagation'
 import generateSteps from './util/generateSteps'
 import {ensureArray, undoEnsureArray} from './util/array-utils'
@@ -243,7 +243,7 @@ class Slider extends React.Component {
     return event => {
       if (this.props.disabled) return
       this._start(i)
-      this._addHandlers(this._getKeyDownEventMap())
+      addHandlers(this._getKeyDownEventMap())
       pauseEvent(event)
     }
   }
@@ -254,7 +254,7 @@ class Slider extends React.Component {
       if (this.props.disabled) return
       let position = this._getMousePosition(event)
       this._start(i, position[0])
-      this._addHandlers(this._getMouseEventMap())
+      addHandlers(this._getMouseEventMap())
       pauseEvent(event)
     }
   }
@@ -267,20 +267,8 @@ class Slider extends React.Component {
       this.startPosition = position
       this.isScrolling = undefined // don't know yet if the user is trying to scroll
       this._start(i, position[0])
-      this._addHandlers(this._getTouchEventMap())
+      addHandlers(this._getTouchEventMap())
       stopPropagation(event)
-    }
-  }
-
-  _addHandlers (eventMap) {
-    for (let key in eventMap) {
-      document.addEventListener(key, eventMap[key], false)
-    }
-  }
-
-  _removeHandlers (eventMap) {
-    for (let key in eventMap) {
-      document.removeEventListener(key, eventMap[key], false)
     }
   }
 
@@ -321,7 +309,7 @@ class Slider extends React.Component {
   }
 
   _onEnd (eventMap) {
-    this._removeHandlers(eventMap)
+    removeHandlers(eventMap)
     this.setState({index: -1}, this._fireChangeEvent.bind(this, 'onAfterChange'))
   }
 
@@ -622,7 +610,7 @@ class Slider extends React.Component {
       this._forceValueFromPosition(position[0], function (i) {
         this._fireChangeEvent('onChange')
         this._start(i, position[0])
-        this._addHandlers(this._getMouseEventMap())
+        addHandlers(this._getMouseEventMap())
       }.bind(this))
     }
 
