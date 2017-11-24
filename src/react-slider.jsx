@@ -12,13 +12,13 @@ class Slider extends React.Component {
   constructor (props) {
     super(props)
 
-    var value = this._or(ensureArray(props.value), ensureArray(props.defaultValue))
+    let value = this._or(ensureArray(props.value), ensureArray(props.defaultValue))
 
     // array for storing resize timeouts ids
     this.pendingResizeTimeouts = []
 
-    var zIndices = []
-    for (var i = 0; i < value.length; i++) {
+    let zIndices = []
+    for (let i = 0; i < value.length; i++) {
       value[i] = this._trimAlignValue(value[i], props)
       zIndices.push(i)
     }
@@ -37,9 +37,9 @@ class Slider extends React.Component {
   // Keep the internal `value` consistent with an outside `value` if present.
   // This basically allows the slider to be a controlled component.
   componentWillReceiveProps (newProps) {
-    var value = this._or(ensureArray(newProps.value), this.state.value)
+    let value = this._or(ensureArray(newProps.value), this.state.value)
 
-    for (var i = 0; i < value.length; i++) {
+    for (let i = 0; i < value.length; i++) {
       this.state.value[i] = this._trimAlignValue(value[i], newProps)
     }
     if (this.state.value.length > value.length)
@@ -58,7 +58,7 @@ class Slider extends React.Component {
   // equally.
   // TODO: better name? better solution?
   _or (value, defaultValue) {
-    var count = React.Children.count(this.props.children)
+    let count = React.Children.count(this.props.children)
     switch (count) {
       case 0:
         return value.length > 0 ? value : defaultValue
@@ -90,18 +90,18 @@ class Slider extends React.Component {
 
   _handleResize () {
     // setTimeout of 0 gives element enough time to have assumed its new size if it is being resized
-    var resizeTimeout = window.setTimeout(function() {
+    let resizeTimeout = window.setTimeout(function() {
       // drop this timeout from pendingResizeTimeouts to reduce memory usage
       this.pendingResizeTimeouts.shift()
 
-      var slider = this.refs.slider
-      var handle = this.refs.handle0
-      var rect = slider.getBoundingClientRect()
+      let slider = this.refs.slider
+      let handle = this.refs.handle0
+      let rect = slider.getBoundingClientRect()
 
-      var size = this._sizeKey()
+      let size = this._sizeKey()
 
-      var sliderMax = rect[this._posMaxKey()]
-      var sliderMin = rect[this._posMinKey()]
+      let sliderMax = rect[this._posMaxKey()]
+      let sliderMin = rect[this._posMinKey()]
 
       this.setState({
         upperBound: slider[size] - handle[size],
@@ -117,7 +117,7 @@ class Slider extends React.Component {
   // clear all pending timeouts to avoid error messages after unmounting
   _clearPendingResizeTimeouts() {
     do {
-      var nextTimeout = this.pendingResizeTimeouts.shift()
+      let nextTimeout = this.pendingResizeTimeouts.shift()
 
       clearTimeout(nextTimeout)
     } while (this.pendingResizeTimeouts.length)
@@ -125,22 +125,22 @@ class Slider extends React.Component {
 
   // calculates the offset of a handle in pixels based on its value.
   _calcOffset (value) {
-    var range = this.props.max - this.props.min
+    let range = this.props.max - this.props.min
     if (range === 0) {
       return 0
     }
-    var ratio = (value - this.props.min) / range
+    let ratio = (value - this.props.min) / range
     return ratio * this.state.upperBound
   }
 
   // calculates the value corresponding to a given pixel offset, i.e. the inverse of `_calcOffset`.
   _calcValue (offset) {
-    var ratio = offset / this.state.upperBound
+    let ratio = offset / this.state.upperBound
     return ratio * (this.props.max - this.props.min) + this.props.min
   }
 
   _buildHandleStyle (offset, i) {
-    var style = {
+    let style = {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this._posMinKey() : '',
       zIndex: this.state.zIndices.indexOf(i) + 1
@@ -150,7 +150,7 @@ class Slider extends React.Component {
   }
 
   _buildBarStyle (min, max) {
-    var obj = {
+    let obj = {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this._posMinKey() + ',' + this._posMaxKey() : ''
     }
@@ -160,15 +160,15 @@ class Slider extends React.Component {
   }
 
   _getClosestIndex (pixelOffset) {
-    var minDist = Number.MAX_VALUE
-    var closestIndex = -1
+    let minDist = Number.MAX_VALUE
+    let closestIndex = -1
 
-    var value = this.state.value
-    var l = value.length
+    let value = this.state.value
+    let l = value.length
 
-    for (var i = 0; i < l; i++) {
-      var offset = this._calcOffset(value[i])
-      var dist = Math.abs(pixelOffset - offset)
+    for (let i = 0; i < l; i++) {
+      let offset = this._calcOffset(value[i])
+      let dist = Math.abs(pixelOffset - offset)
       if (dist < minDist) {
         minDist = dist
         closestIndex = i
@@ -179,7 +179,7 @@ class Slider extends React.Component {
   }
 
   _calcOffsetFromPosition (position) {
-    var pixelOffset = position - this.state.sliderStart
+    let pixelOffset = position - this.state.sliderStart
     if (this.props.invert) pixelOffset = this.state.sliderLength - pixelOffset
     pixelOffset -= (this.state.handleSize / 2)
     return pixelOffset
@@ -187,15 +187,15 @@ class Slider extends React.Component {
 
   // Snaps the nearest handle to the value corresponding to `position` and calls `callback` with that handle's index.
   _forceValueFromPosition (position, callback) {
-    var pixelOffset = this._calcOffsetFromPosition(position)
-    var closestIndex = this._getClosestIndex(pixelOffset)
-    var nextValue = this._trimAlignValue(this._calcValue(pixelOffset))
+    let pixelOffset = this._calcOffsetFromPosition(position)
+    let closestIndex = this._getClosestIndex(pixelOffset)
+    let nextValue = this._trimAlignValue(this._calcValue(pixelOffset))
 
-    var value = this.state.value.slice() // Clone this.state.value since we'll modify it temporarily
+    let value = this.state.value.slice() // Clone this.state.value since we'll modify it temporarily
     value[closestIndex] = nextValue
 
     // Prevents the slider from shrinking below `props.minDistance`
-    for (var i = 0; i < value.length - 1; i += 1) {
+    for (let i = 0; i < value.length - 1; i += 1) {
       if (value[i + 1] - value[i] < this.props.minDistance) return
     }
 
@@ -210,7 +210,7 @@ class Slider extends React.Component {
   }
 
   _getTouchPosition (e) {
-    var touch = e.touches[0]
+    let touch = e.touches[0]
     return [
       touch['page' + this._axisKey()],
       touch['page' + this._orthogonalAxisKey()]
@@ -252,7 +252,7 @@ class Slider extends React.Component {
   _createOnMouseDown (i) {
     return event => {
       if (this.props.disabled) return
-      var position = this._getMousePosition(event)
+      let position = this._getMousePosition(event)
       this._start(i, position[0])
       this._addHandlers(this._getMouseEventMap())
       pauseEvent(event)
@@ -263,7 +263,7 @@ class Slider extends React.Component {
   _createOnTouchStart (i) {
     return event => {
       if (this.props.disabled || e.touches.length > 1) return
-      var position = this._getTouchPosition(event)
+      let position = this._getTouchPosition(event)
       this.startPosition = position
       this.isScrolling = undefined // don't know yet if the user is trying to scroll
       this._start(i, position[0])
@@ -273,20 +273,20 @@ class Slider extends React.Component {
   }
 
   _addHandlers (eventMap) {
-    for (var key in eventMap) {
+    for (let key in eventMap) {
       document.addEventListener(key, eventMap[key], false)
     }
   }
 
   _removeHandlers (eventMap) {
-    for (var key in eventMap) {
+    for (let key in eventMap) {
       document.removeEventListener(key, eventMap[key], false)
     }
   }
 
   _start (i, position) {
-    var activeEl = document.activeElement
-    var handleRef = this.refs['handle' + i]
+    let activeEl = document.activeElement
+    let handleRef = this.refs['handle' + i]
     // if activeElement is body window will lost focus in IE9
     if (activeEl && activeEl != document.body && activeEl != handleRef) {
       activeEl.blur && activeEl.blur()
@@ -296,7 +296,7 @@ class Slider extends React.Component {
 
     this._fireChangeEvent('onBeforeChange')
 
-    var zIndices = this.state.zIndices
+    let zIndices = this.state.zIndices
     zIndices.splice(zIndices.indexOf(i), 1) // remove wherever the element is
     zIndices.push(i) // add to end
 
@@ -326,20 +326,20 @@ class Slider extends React.Component {
   }
 
   _onMouseMove (e) {
-    var position = this._getMousePosition(e)
-    var diffPosition = this._getDiffPosition(position[0])
-    var newValue = this._getValueFromPosition(diffPosition)
+    let position = this._getMousePosition(e)
+    let diffPosition = this._getDiffPosition(position[0])
+    let newValue = this._getValueFromPosition(diffPosition)
     this._move(newValue)
   }
 
   _onTouchMove (e) {
     if (e.touches.length > 1) return
 
-    var position = this._getTouchPosition(e)
+    let position = this._getTouchPosition(e)
 
     if (typeof this.isScrolling === 'undefined') {
-      var diffMainDir = position[0] - this.startPosition[0]
-      var diffScrollDir = position[1] - this.startPosition[1]
+      let diffMainDir = position[0] - this.startPosition[0]
+      let diffScrollDir = position[1] - this.startPosition[1]
       this.isScrolling = Math.abs(diffScrollDir) > Math.abs(diffMainDir)
     }
 
@@ -350,8 +350,8 @@ class Slider extends React.Component {
 
     pauseEvent(e)
 
-    var diffPosition = this._getDiffPosition(position[0])
-    var newValue = this._getValueFromPosition(diffPosition)
+    let diffPosition = this._getDiffPosition(position[0])
+    let newValue = this._getValueFromPosition(diffPosition)
 
     this._move(newValue)
   }
@@ -375,24 +375,24 @@ class Slider extends React.Component {
   }
 
   _moveUpOneStep () {
-    var oldValue = this.state.value[this.state.index]
-    var newValue = oldValue + this.props.step
+    let oldValue = this.state.value[this.state.index]
+    let newValue = oldValue + this.props.step
     this._move(Math.min(newValue, this.props.max))
   }
 
   _moveDownOneStep () {
-    var oldValue = this.state.value[this.state.index]
-    var newValue = oldValue - this.props.step
+    let oldValue = this.state.value[this.state.index]
+    let newValue = oldValue - this.props.step
     this._move(Math.max(newValue, this.props.min))
   }
 
   _getValueFromPosition (position) {
-    var diffValue = position / (this.state.sliderLength - this.state.handleSize) * (this.props.max - this.props.min)
+    let diffValue = position / (this.state.sliderLength - this.state.handleSize) * (this.props.max - this.props.min)
     return this._trimAlignValue(this.state.startValue + diffValue)
   }
 
   _getDiffPosition (position) {
-    var diffPosition = position - this.state.startPosition
+    let diffPosition = position - this.state.startPosition
     if (this.props.invert) diffPosition *= -1
     return diffPosition
   }
@@ -400,28 +400,28 @@ class Slider extends React.Component {
   _move (newValue) {
     this.hasMoved = true
 
-    var props = this.props
-    var state = this.state
-    var index = state.index
+    let props = this.props
+    let state = this.state
+    let index = state.index
 
-    var value = state.value
-    var length = value.length
-    var oldValue = value[index]
+    let value = state.value
+    let length = value.length
+    let oldValue = value[index]
 
-    var minDistance = props.minDistance
+    let minDistance = props.minDistance
 
     // if "pearling" (= handles pushing each other) is disabled,
     // prevent the handle from getting closer than `minDistance` to the previous or next handle.
     if (!props.pearling) {
       if (index > 0) {
-        var valueBefore = value[index - 1]
+        let valueBefore = value[index - 1]
         if (newValue < valueBefore + minDistance) {
           newValue = valueBefore + minDistance
         }
       }
 
       if (index < length - 1) {
-        var valueAfter = value[index + 1]
+        let valueAfter = value[index + 1]
         if (newValue > valueAfter - minDistance) {
           newValue = valueAfter - minDistance
         }
@@ -450,7 +450,7 @@ class Slider extends React.Component {
   }
 
   _pushSucceeding (value, minDistance, index) {
-    var i, padding
+    let i, padding
     for (i = index, padding = value[i] + minDistance;
          value[i + 1] != null && padding > value[i + 1];
          i++, padding = value[i] + minDistance) {
@@ -459,8 +459,8 @@ class Slider extends React.Component {
   }
 
   _trimSucceeding (length, nextValue, minDistance, max) {
-    for (var i = 0; i < length; i++) {
-      var padding = max - i * minDistance
+    for (let i = 0; i < length; i++) {
+      let padding = max - i * minDistance
       if (nextValue[length - 1 - i] > padding) {
         nextValue[length - 1 - i] = padding
       }
@@ -468,7 +468,7 @@ class Slider extends React.Component {
   }
 
   _pushPreceding (value, minDistance, index) {
-    var i, padding
+    let i, padding
     for (i = index, padding = value[i] - minDistance;
          value[i - 1] != null && padding < value[i - 1];
          i--, padding = value[i] - minDistance) {
@@ -477,8 +477,8 @@ class Slider extends React.Component {
   }
 
   _trimPreceding (length, nextValue, minDistance, min) {
-    for (var i = 0; i < length; i++) {
-      var padding = min + i * minDistance
+    for (let i = 0; i < length; i++) {
+      let padding = min + i * minDistance
       if (nextValue[i] < padding) {
         nextValue[i] = padding
       }
@@ -486,31 +486,31 @@ class Slider extends React.Component {
   }
 
   _axisKey () {
-    var orientation = this.props.orientation
+    let orientation = this.props.orientation
     if (orientation === Direction.Horizontal) return 'X'
     if (orientation === Direction.Vertical) return 'Y'
   }
 
   _orthogonalAxisKey () {
-    var orientation = this.props.orientation
+    let orientation = this.props.orientation
     if (orientation === Direction.Horizontal) return 'Y'
     if (orientation === Direction.Vertical) return 'X'
   }
 
   _posMinKey () {
-    var orientation = this.props.orientation
+    let orientation = this.props.orientation
     if (orientation === Direction.Horizontal) return this.props.invert ? 'right' : 'left'
     if (orientation === Direction.Vertical) return this.props.invert ? 'bottom' : 'top'
   }
 
   _posMaxKey () {
-    var orientation = this.props.orientation
+    let orientation = this.props.orientation
     if (orientation === Direction.Horizontal) return this.props.invert ? 'left' : 'right'
     if (orientation === Direction.Vertical) return this.props.invert ? 'top' : 'bottom'
   }
 
   _sizeKey () {
-    var orientation = this.props.orientation
+    let orientation = this.props.orientation
     if (orientation === Direction.Horizontal) return 'clientWidth'
     if (orientation === Direction.Vertical) return 'clientHeight'
   }
@@ -531,8 +531,8 @@ class Slider extends React.Component {
   _alignValue (val, props) {
     props = props || this.props
 
-    var valModStep = (val - props.min) % props.step
-    var alignValue = val - valModStep
+    let valModStep = (val - props.min) % props.step
+    let alignValue = val - valModStep
 
     if (Math.abs(valModStep) * 2 >= props.step) {
       alignValue += (valModStep > 0) ? props.step : (-props.step)
@@ -542,7 +542,7 @@ class Slider extends React.Component {
   }
 
   _renderHandle (style, child, i) {
-    var className = this.props.handleClassName + ' ' +
+    let className = this.props.handleClassName + ' ' +
       (this.props.handleClassName + '-' + i) + ' ' +
       (this.state.index === i ? this.props.handleActiveClassName : '')
 
@@ -567,15 +567,15 @@ class Slider extends React.Component {
   }
 
   _renderHandles (offset) {
-    var length = offset.length
+    let length = offset.length
 
-    var styles = new Array(length)
-    for (var i = 0; i < length; i++) {
+    let styles = new Array(length)
+    for (let i = 0; i < length; i++) {
       styles[i] = this._buildHandleStyle(offset[i], i)
     }
 
-    var res = new Array(length)
-    var renderHandle = this._renderHandle
+    let res = new Array(length)
+    let renderHandle = this._renderHandle
     if (React.Children.count(this.props.children) > 0) {
       React.Children.forEach(this.props.children, function (child, i) {
         res[i] = renderHandle(styles[i], child, i)
@@ -600,12 +600,12 @@ class Slider extends React.Component {
   }
 
   _renderBars (offset) {
-    var bars = []
-    var lastIndex = offset.length - 1
+    let bars = []
+    let lastIndex = offset.length - 1
 
     bars.push(this._renderBar(0, 0, offset[0]))
 
-    for (var i = 0; i < lastIndex; i++) {
+    for (let i = 0; i < lastIndex; i++) {
       bars.push(this._renderBar(i + 1, offset[i], offset[i + 1]))
     }
 
@@ -618,7 +618,7 @@ class Slider extends React.Component {
     if (this.props.disabled) return
     this.hasMoved = false
     if (!this.props.snapDragDisabled) {
-      var position = this._getMousePosition(e)
+      let position = this._getMousePosition(e)
       this._forceValueFromPosition(position[0], function (i) {
         this._fireChangeEvent('onChange')
         this._start(i, position[0])
@@ -633,8 +633,8 @@ class Slider extends React.Component {
     if (this.props.disabled) return
 
     if (this.props.onSliderClick && !this.hasMoved) {
-      var position = this._getMousePosition(e)
-      var valueAtPos = this._trimAlignValue(this._calcValue(this._calcOffsetFromPosition(position[0])))
+      let position = this._getMousePosition(e)
+      let valueAtPos = this._trimAlignValue(this._calcValue(this._calcOffsetFromPosition(position[0])))
       this.props.onSliderClick(valueAtPos)
     }
   }
@@ -646,18 +646,18 @@ class Slider extends React.Component {
   }
 
   render () {
-    var state = this.state
-    var props = this.props
+    let state = this.state
+    let props = this.props
 
-    var value = state.value
-    var l = value.length
-    var offset = new Array(l)
-    for (var i = 0; i < l; i++) {
+    let value = state.value
+    let l = value.length
+    let offset = new Array(l)
+    for (let i = 0; i < l; i++) {
       offset[i] = this._calcOffset(value[i], i)
     }
 
-    var bars = props.withBars ? this._renderBars(offset) : null
-    var handles = this._renderHandles(offset)
+    let bars = props.withBars ? this._renderBars(offset) : null
+    let handles = this._renderHandles(offset)
 
     return (
       React.createElement('div', {
