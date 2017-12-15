@@ -569,7 +569,7 @@ class Slider extends React.Component {
         res[i] = renderHandle(styles[i], child, i)
       })
     } else {
-      for (i = 0; i < length; i++) {
+      for (let i = 0; i < length; i++) {
         res[i] = renderHandle(styles[i], null, i)
       }
     }
