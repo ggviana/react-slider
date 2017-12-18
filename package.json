@@ -1,5 +1,5 @@
 {
-  "name": "react-slider",
+  "name": "react-multi-slider",
   "version": "0.0.1",
   "description": "Slider component for React",
   "main": "src/index.js",
