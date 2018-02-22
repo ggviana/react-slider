@@ -262,7 +262,7 @@ class Slider extends React.Component {
   // create the `touchstart` handler for the i-th handle
   _createOnTouchStart (i) {
     return event => {
-      if (this.props.disabled || e.touches.length > 1) return
+      if (this.props.disabled || event.touches.length > 1) return
       let position = this._getTouchPosition(event)
       this.startPosition = position
       this.isScrolling = undefined // don't know yet if the user is trying to scroll

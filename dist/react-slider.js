@@ -593,7 +593,7 @@ var Slider = function (_React$Component) {
       var _this4 = this;
 
       return function (event) {
-        if (_this4.props.disabled || e.touches.length > 1) return;
+        if (_this4.props.disabled || event.touches.length > 1) return;
         var position = _this4._getTouchPosition(event);
         _this4.startPosition = position;
         _this4.isScrolling = undefined; // don't know yet if the user is trying to scroll
