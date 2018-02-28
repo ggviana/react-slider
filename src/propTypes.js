@@ -17,7 +17,10 @@ export default {
    * Must be greater than zero.
    * `max - min` should be evenly divisible by the step value.
    */
-  step: PropTypes.number,
+  step: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number)
+  ]),
 
   /**
    * The minimal distance between any pair of handles.

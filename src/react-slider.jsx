@@ -13,6 +13,9 @@ class Slider extends React.Component {
     super(props)
 
     let value = this._or(ensureArray(props.value), ensureArray(props.defaultValue))
+    
+    // checks if step is an array
+    this.isStepArray = Array.isArray(props.step)
 
     // array for storing resize timeouts ids
     this.pendingResizeTimeouts = []
@@ -518,12 +521,24 @@ class Slider extends React.Component {
 
   _alignValue (val, props) {
     props = props || this.props
+    let alignValue
 
-    let valModStep = (val - props.min) % props.step
-    let alignValue = val - valModStep
+    if (this.isStepArray) {
+      const diffs = props.step.reduce((out, step) => {
+        out.push(Math.abs(val - step))
+        return out
+      }, [])
+      
+      const minDiffIndex = diffs.indexOf(Math.min.apply(null, diffs))
 
-    if (Math.abs(valModStep) * 2 >= props.step) {
-      alignValue += (valModStep > 0) ? props.step : (-props.step)
+      alignValue = props.step[minDiffIndex]
+    } else {
+      let valModStep = (val - props.min) % props.step
+      alignValue = val - valModStep
+
+      if (Math.abs(valModStep) * 2 >= props.step) {
+        alignValue += (valModStep > 0) ? props.step : (-props.step)
+      }
     }
 
     return parseFloat(alignValue.toFixed(5))

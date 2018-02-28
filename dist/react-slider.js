@@ -47,7 +47,7 @@ var propTypes = {
    * Must be greater than zero.
    * `max - min` should be evenly divisible by the step value.
    */
-  step: PropTypes.number,
+  step: PropTypes.oneOfType([PropTypes.number, PropTypes.arrayOf(PropTypes.number)]),
 
   /**
    * The minimal distance between any pair of handles.
@@ -303,6 +303,9 @@ var Slider = function (_React$Component) {
     var _this = possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).call(this, props));
 
     var value = _this._or(ensureArray(props.value), ensureArray(props.defaultValue));
+
+    // checks if step is an array
+    _this.isStepArray = Array.isArray(props.step);
 
     // array for storing resize timeouts ids
     _this.pendingResizeTimeouts = [];
@@ -871,12 +874,24 @@ var Slider = function (_React$Component) {
     key: '_alignValue',
     value: function _alignValue(val, props) {
       props = props || this.props;
+      var alignValue = void 0;
 
-      var valModStep = (val - props.min) % props.step;
-      var alignValue = val - valModStep;
+      if (this.isStepArray) {
+        var diffs = props.step.reduce(function (out, step) {
+          out.push(Math.abs(val - step));
+          return out;
+        }, []);
 
-      if (Math.abs(valModStep) * 2 >= props.step) {
-        alignValue += valModStep > 0 ? props.step : -props.step;
+        var minDiffIndex = diffs.indexOf(Math.min.apply(null, diffs));
+
+        alignValue = props.step[minDiffIndex];
+      } else {
+        var valModStep = (val - props.min) % props.step;
+        alignValue = val - valModStep;
+
+        if (Math.abs(valModStep) * 2 >= props.step) {
+          alignValue += valModStep > 0 ? props.step : -props.step;
+        }
       }
 
       return parseFloat(alignValue.toFixed(5));
